@@ -669,11 +669,7 @@
     <p class="signup-title">Anthony's Balls</p>
     <p class="signup-desc">Be the first to know when the film drops! You won't get spammed — we will only notify you when the balls drop!</p>
 
-    <form id="signup-form" method="POST"
-      action="https://c8501539.sibforms.com/serve/MUIFAPdTjE9ooxnLha_9ULu8aLwX5uiNjy6maW6NFXFa__AzPg7RQw9ckp8oDzTRN1UUpY4Rc5P4UuTHBf5c0iWudvjUApm7RV-PMWdRPyrIyYOYDGxzn6xaA4TayyxdY4nqtCxKXfImrIZ0qePCjeuVOwP4X8N3XPzYKge31prWn8517JyMFVTMkZxYoqU79_lsp82vX5WiSwGi7Q=="
-      data-type="subscription">
-      <input type="hidden" name="locale" value="en">
-      <input type="text" name="email_address_check" value="" style="display:none">
+    <form id="signup-form">
 
       <div class="signup-name-row">
         <div>
@@ -886,28 +882,16 @@ document.getElementById('signup-form').addEventListener('submit', async function
   var lastName  = (document.getElementById('sf-LASTNAME').value  || '').trim();
   var email     = (document.getElementById('sf-EMAIL').value     || '').trim();
 
-  // Submit to Google Sheets in parallel
-  submitToGoogleSheets(firstName, lastName, email);
-
   try {
-    var res = await fetch(this.action, {
-      method: 'POST',
-      body: new FormData(this),
-      headers: { 'Accept': 'application/json' }
-    });
-    if (res.ok) {
-      document.getElementById('signup-form').style.display = 'none';
-      success.style.display = 'block';
-    } else {
-      error.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Notify Me';
-    }
+    await submitToGoogleSheets(firstName, lastName, email);
+    document.getElementById('signup-form').style.display = 'none';
+    success.style.display = 'block';
   } catch(err) {
-    this.submit();
+    error.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Notify Me';
   }
 
-  // Show thank-you popup regardless of Brevo result
   showThankYouPopup();
 });
 
